@@ -7,7 +7,11 @@
     <h1>Proyectos</h1>
     <ul>
         {% for project in object_list %}
-            <li>{{ project.name }}: {{ project.description }} - Creado: {{ project.created_at }}</li>
+            <li>
+                {{ project.name }}: {{ project.description }} - Creado: {{ project.created_at }}
+                <a href="{% url 'task_create' project.id %}">Agregar Tarea</a>
+                <a href="{% url 'task_list' project.id %}">Lista de tareas</a>
+            </li>
         {% endfor %}
     </ul>
     <a href="{% url 'project_create' %}">Agregar Nuevo Proyecto</a>
