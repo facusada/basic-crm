@@ -12,6 +12,7 @@ class TaskCreateView(View):
     def post(self, request, project_id):
         project = get_object_or_404(Project, id=project_id)
         form = TaskForm(request.POST)
+
         if form.is_valid():
             task = form.save(commit=False)
             task.project = project

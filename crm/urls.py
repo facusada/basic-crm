@@ -1,5 +1,6 @@
 from django.urls import path
 
+from crm.views.change_task_status import ChangeTaskStatusView
 from crm.views.create_task import TaskCreateView
 from crm.views.get_tasks import TaskListView
 from crm.views.project_detail import ProjectDetailView
@@ -12,5 +13,5 @@ urlpatterns = [
     path('project/<int:project_id>/tasks/', TaskListView.as_view(), name='task_list'),
     path('project/<int:project_id>/task/add/', TaskCreateView.as_view(), name='task_create'),
     path('project/<int:project_id>/', ProjectDetailView.as_view(), name='project_detail'),
-    # path('project/<int:project_id>/task/<int:task_id>/change-status/', ChangeTaskStatusView.as_view(), name='change_task_status'),
+    path('project/<int:project_id>/task/<int:task_id>/change-status/', ChangeTaskStatusView.as_view(), name='change_task_status'),
 ]
