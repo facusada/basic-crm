@@ -1,21 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
-from ..models import Project
-from ..forms import TaskForm
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from ..services.create_task_service import TaskService
 
-class TaskCreateView(View):
-    def get(self, request, project_id):
-        project = get_object_or_404(Project, id=project_id)
-        form = TaskForm(initial={'project': project})
-        return render(request, 'crm/create_task.html', {'form': form, 'project': project})
 
+class TaskCreateView(APIView):
     def post(self, request, project_id):
-        project = get_object_or_404(Project, id=project_id)
-        form = TaskForm(request.POST)
+        task_data = request.data
 
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.project = project
-            task.save()
-            return redirect('get_projects')
-        return render(request, 'crm/create_task.html', {'form': form, 'project': project})
+        try:
+            task = TaskService.create_task(project_id, task_data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        response_data = {
+            'id': task.id,
+            'title': task.title,
+            'description': task.description,
+            'status': task.status,
+            'due_date': task.due_date,
+            'project': task.project.id,
+            'created_at': task.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_at': task.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        return Response(response_data, status=status.HTTP_201_CREATED)
